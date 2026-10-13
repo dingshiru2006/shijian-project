@@ -1,0 +1,91 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: kb-system
+
+  # ================= 数据库（MySQL） =================
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/kb_system?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:root1234}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-timeout: 5000
+
+  # ================= JPA =================
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: false
+
+  # ================= Redis（登录状态/缓存） =================
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:redis1234}
+      database: ${REDIS_DATABASE:0}
+      timeout: 5000ms
+      lettuce:
+        pool:
+          max-active: 16
+          max-idle: 8
+          min-idle: 2
+          max-wait: 3000ms
+
+  # ================= Elasticsearch（全文检索） =================
+  elasticsearch:
+    uris: ${ES_URIS:http://localhost:9200}
+    connection-timeout: 5s
+    socket-timeout: 10s
+
+  # ================= RabbitMQ（异步索引重建） =================
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:kbadmin}
+    password: ${RABBITMQ_PASSWORD:kb123456}
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 1
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+# ================= 应用自定义配置 =================
+app:
+  jwt:
+    # 生产环境必须通过环境变量 JWT_SECRET 覆盖
+    secret: ${JWT_SECRET:ZhiKuKnowledgeBasePlatformJwtSecretKey2026DoNotLeak}
+    # Token 有效期（秒）
+    expiration: ${JWT_EXPIRATION:7200}
+    header: Authorization
+    prefix: "Bearer "
+  file:
+    # 文件上传目录（相对于工作目录）
+    upload-dir: ${FILE_UPLOAD_DIR:./data/files}
+    max-size: ${FILE_MAX_SIZE:10485760}
+  es:
+    index-name: ${ES_INDEX_NAME:kb_document}
+    rebuild-batch-size: ${ES_REBUILD_BATCH_SIZE:500}
+
+logging:
+  level:
+    com.kb.system: info
+    org.hibernate.SQL: warn
+    org.hibernate.orm.jdbc.bind: warn
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{40} - %msg%n"
