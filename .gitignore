@@ -17,3 +17,6 @@ kb-frontend.zip
 .DS_Store
 Thumbs.db
 *.log
+
+# 项目元数据
+.workbuddy/
