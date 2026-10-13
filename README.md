@@ -102,7 +102,7 @@ MYSQL_PORT=3307 REDIS_PORT=6380 java -jar target/kb-system.jar
 ```bash
 cd frontend
 npm install
-npm run dev        # http://localhost:5173（/api 代理到 8080）
+npm run dev        # http://localhost:5178（/api 代理到 8080；端口被占用时自动顺延，以终端输出为准）
 # 生产构建：
 npm run build      # 产物在 dist/，可用 npx vite preview 预览
 ```

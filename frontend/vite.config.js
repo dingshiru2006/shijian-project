@@ -12,8 +12,8 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
+    // 默认 5178（避开本机 5173 上其他项目）；若被占用 Vite 自动顺延，以终端输出为准
     port: 5178,
-    strictPort: true,
     proxy: {
       '/api': {
         target: 'http://localhost:8080',
